@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
   var reply_to_message_id = update.message.message_id;
   if (telegramCmd === '/hola') {
     Pet.create(model, function(err, post) {
-      telegram.sendMessage(chat_id, 'hola');
+      telegram.forceReply(chat_id, 'hola');
     })
   }
   res.json({ status: 'ok' });

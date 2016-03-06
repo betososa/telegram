@@ -5,13 +5,11 @@ var querystring = require('querystring');
 var telegram = {
 
     sendMessage: function(chat_id, text) {
-	console.log('----->');
         // Send the chat id, message to reply to, and the message to send
         var telegramRequestData = querystring.stringify({
             chat_id: chat_id,
             text: text,
         });
-	console.log('telegramReqData', telegramRequestData);
 
         // Define the POST request
         var telegramRequestOptions = {
@@ -24,7 +22,54 @@ var telegram = {
                 'Content-Length': telegramRequestData.length
             }
         };
-	console.log('telegramRequestOptions', telegramRequestOptions);
+
+        // Execute the request
+        var telegramRequest = https.request(telegramRequestOptions, function(telegramResponse) {
+            telegramResponse.setEncoding('utf8');
+
+            // Read the response (not used right now, but you can log this to see what's happening)
+            var output = '';
+            telegramResponse.on('data', function (chunk) {
+                output += chunk;
+            });
+
+            // Log the response status code
+            telegramResponse.on('end', function() {
+                console.log('Telegram - received response code: ' + telegramResponse.statusCode);
+            });
+        });
+
+        // Log errors
+        telegramRequest.on('error', function(err) {
+            console.error('Telegram API error: ' + err.message);
+        });
+
+        // Send the data
+        telegramRequest.write(telegramRequestData);
+
+        // Done
+        telegramRequest.end();
+
+    }
+
+    foreceReply: function(chat_id, text) {
+        // Send the chat id, message to reply to, and the message to send
+        var telegramRequestData = querystring.stringify({
+            chat_id: chat_id,
+            text: text,
+        });
+
+        // Define the POST request
+        var telegramRequestOptions = {
+            host: 'api.telegram.org',
+            port: 443,
+            path: '/bot' + config.telegramToken + '/ForeceReply',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': telegramRequestData.length
+            }
+        };
 
         // Execute the request
         var telegramRequest = https.request(telegramRequestOptions, function(telegramResponse) {
