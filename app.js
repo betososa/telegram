@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var telegram = require('./routes/telegram');
+var mongoose = require('mongoose');
 
 var app = express();
 
@@ -26,6 +27,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/telegram', telegram);
+
+mongoose.connect('mongodb://localhost/missyApp', function(err) {
+    if(err) {
+        console.log('connection error', err);
+    } else {
+        console.log('connection successful');
+    }
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

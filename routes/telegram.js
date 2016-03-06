@@ -8,6 +8,10 @@ var upload = multer({ dest: './uploads/' });
 
 var gcloud = require('gcloud');
 
+var mongoose = require('mongoose');
+var Pet = require('../models/petSchema.js');
+
+
 var gcs = gcloud.storage({
   projectId: 'missyapp-1242',
   keyFilename: './config/missyapp-c13275e43cdc.json'
@@ -22,7 +26,9 @@ router.post('/', function(req, res, next) {
   var chat_id = update.message.chat.id;
   var reply_to_message_id = update.message.message_id;
   if (telegramCmd === '/hola') {
-    telegram.sendMessage(chat_id, 'hola');
+    Pet.create(update, function(err, post) {
+      telegram.sendMessage(chat_id, 'hola');
+    })
   }
   res.json({ status: 'ok' });
 });
