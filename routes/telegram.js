@@ -23,10 +23,16 @@ router.post('/', function(req, res, next) {
   var update = req.body;
   var telegramCmd = update.message.text;
   console.log(telegramCmd);
+  var model = {
+    petName: '',
+    petPic: '',
+    userId: update.message.from.id,
+    report: { coordinates: [], reported_at: '' }
+  }
   var chat_id = update.message.chat.id;
   var reply_to_message_id = update.message.message_id;
   if (telegramCmd === '/hola') {
-    Pet.create(update, function(err, post) {
+    Pet.create(model, function(err, post) {
       telegram.sendMessage(chat_id, 'hola');
     })
   }
@@ -35,9 +41,12 @@ router.post('/', function(req, res, next) {
 
 router.post('/image', upload.single('missing'), function(req, res, next) {
   caption.path(req.file.path, {caption: 'HHOOLLAA', outputFile: './uploads/'+req.file.originalname}, function(err, image) {
-    if (err) return err;
+    if (err) {
+      console.log("error en caption", err)
+    };
     bucket.upload('./uploads/'+req.file.originalname, function(err, file) {
       if (err) {
+        console.log('error en bucket upload');
         return res.json({ error: err });
       }
       res.json({status: 'ok'});
