@@ -4,14 +4,14 @@ var querystring = require('querystring');
 
 var telegram = {
 
-    sendMessage: function(chat_id, text, reply_to_message_id) {
-
+    sendMessage: function(chat_id, text) {
+	console.log('----->');
         // Send the chat id, message to reply to, and the message to send
         var telegramRequestData = querystring.stringify({
             chat_id: chat_id,
             text: text,
-            reply_to_message_id: reply_to_message_id
         });
+	console.log('telegramReqData', telegramRequestData);
 
         // Define the POST request
         var telegramRequestOptions = {
@@ -24,6 +24,7 @@ var telegram = {
                 'Content-Length': telegramRequestData.length
             }
         };
+	console.log('telegramRequestOptions', telegramRequestOptions);
 
         // Execute the request
         var telegramRequest = https.request(telegramRequestOptions, function(telegramResponse) {

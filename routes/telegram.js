@@ -4,12 +4,17 @@ var telegram = require('../helpers/telegram.js');
 
 router.post('/', function(req, res, next) {
   var update = req.body;
+  console.log('----------');
   console.log(update);
-  var telegramCmd = body.text;
-  var chat_id = telegramUpdate.message.chat.id;
-  var reply_to_message_id = telegramUpdate.message.message_id;
+  console.log('----------');
+  var telegramCmd = update.message.text;
+  console.log(telegramCmd);
+  var chat_id = update.message.chat.id;
+  var reply_to_message_id = update.message.message_id;
   if (telegramCmd === '/hola') {
-    telegram.sendMessage(chat_id, 'hola', reply_to_message_id);
+    console.log('----------*************************');
+    telegram.sendMessage(chat_id, 'hola');
+    //res.json({ status: 'ok' });
   }
   res.json({ status: 'ok' });
 });
