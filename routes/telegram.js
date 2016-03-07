@@ -20,10 +20,12 @@ var gcs = gcloud.storage({
 var bucket = gcs.bucket('missyappbucket');
 
 router.post('/', function(req, res, next) {
+  console.log('[DEBUG] Entering route');
   var update  = req.body;
   var command = update.message.text;
   var chatId  = update.message.chat.id;
   if (command === '/start') {
+    console.log('[DEBUG] Entering if start');
     var model = {
       petName: '',
       petPic: '',
@@ -31,8 +33,12 @@ router.post('/', function(req, res, next) {
       report: { coordinates: [], reported_at: '' }
     }
     Pet.create(model, function(err, post) {
-      console.log('UPDATE', update);
-      telegram.sendMessage(chat_id, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
+      if (err) {
+        console.error(err);
+      }
+      telegram.sendMessage(chatId, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
     });
   }
 });
+
+module.exports = router;
