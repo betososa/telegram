@@ -30,13 +30,13 @@ router.post('/', function(req, res, next) {
   var chat_id = update.message.chat.id;
   var reply_to_message_id = update.message.message_id;
   if (telegramCmd === '/start') {
+    var model = {
+      petName: '',
+      petPic: '',
+      userId: update.message.from.id,
+      report: { coordinates: [], reported_at: '' }
+    }
     Pet.create(model, function(err, post) {
-      var model = {
-        petName: '',
-        petPic: '',
-        userId: update.message.from.id,
-        report: { coordinates: [], reported_at: '' }
-      }
       console.log('UPDATE', update);
       telegram.sendMessage(chat_id, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
     })
