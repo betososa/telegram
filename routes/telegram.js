@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var telegram = require('../helpers/telegram.js');
 
+var https = require('https');
+var config = require('../config/config.js');
+var querystring = require('qs');
+
 var caption = require('caption');
 var multer = require('multer');
 var upload = multer({ dest: './uploads/' });
@@ -36,6 +40,47 @@ router.post('/', function(req, res, next) {
       console.log('UPDATE', update);
       telegram.sendMessage(chat_id, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
     })
+  }
+  else if (update.message.document) {
+    var telegramData = querystring.stringify({
+      file_id: update.message.document.file_id
+    });
+    var telegramRequestOptions = {
+      host: 'api.telegram.org',
+      port: 443,
+      path: '/bot' + config.telegramToken + '/getFile',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': telegramRequestData.length
+      }
+    };
+        var telegramRequest = https.request(telegramRequestOptions, function(telegramResponse) {
+            telegramResponse.setEncoding('utf8');
+
+            // Read the response (not used right now, but you can log this to see what's happening)
+            var output = '';
+            telegramResponse.on('data', function (chunk) {
+                output += chunk;
+            });
+
+            // Log the response status code
+            telegramResponse.on('end', function() {
+                console.log("END", telegramResponse);
+                console.log('Telegram - received response code: ' + telegramResponse.statusCode);
+            });
+        });
+
+        // Log errors
+        telegramRequest.on('error', function(err) {
+            console.error('Telegram API error: ' + err.message);
+        });
+
+        // Send the data
+        telegramRequest.write(telegramData);
+
+        // Done
+        telegramRequest.end();
   }
   res.json({ status: 'ok' });
 });
