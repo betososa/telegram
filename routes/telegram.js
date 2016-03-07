@@ -23,17 +23,18 @@ router.post('/', function(req, res, next) {
   var update = req.body;
   var telegramCmd = update.message.text;
   console.log(telegramCmd);
-  var model = {
-    petName: '',
-    petPic: '',
-    userId: update.message.from.id,
-    report: { coordinates: [], reported_at: '' }
-  }
   var chat_id = update.message.chat.id;
   var reply_to_message_id = update.message.message_id;
-  if (telegramCmd === '/hola') {
+  if (telegramCmd === '/start') {
     Pet.create(model, function(err, post) {
-      telegram.forceReply(chat_id, 'hola');
+      var model = {
+        petName: '',
+        petPic: '',
+        userId: update.message.from.id,
+        report: { coordinates: [], reported_at: '' }
+      }
+      console.log('UPDATE', update);
+      telegram.sendMessage(chat_id, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
     })
   }
   res.json({ status: 'ok' });
