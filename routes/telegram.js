@@ -42,7 +42,7 @@ router.post('/', function(req, res, next) {
   }
   else if (containsMultimedia) {
     console.log('[DEBUG] entering multimedia');
-
+    telegram.getFile(update.message.document.file_id);
   }
 });
 
