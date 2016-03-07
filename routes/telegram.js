@@ -24,6 +24,7 @@ router.post('/', function(req, res, next) {
   var update  = req.body;
   var command = update.message.text;
   var chatId  = update.message.chat.id;
+  var containsMultimedia = update.message.document ? true :  false;
   if (command === '/start') {
     console.log('[DEBUG] Entering if start');
     var model = {
@@ -38,6 +39,10 @@ router.post('/', function(req, res, next) {
       }
       telegram.sendMessage(chatId, 'Hola, necesitamos una foto de tu mascota, en caso de que sea necesario podamos mandarla a las personas que esten en el area');
     });
+  }
+  else if (containsMultimedia) {
+    console.log('[DEBUG] entering multimedia');
+
   }
 });
 
